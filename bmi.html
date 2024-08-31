@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .calculator{
+            display: flex;
+            justify-content: right;
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html">Back to Homepage</a>
+    <div class="calculator">
+        <ul class="web">
+            <li><a href="calculator.html">Calculator</a></li>
+            <li><a href="bmi.html">BMI Calculator</a></li>
+            <li><a href="speed.html">Speed Calculator</a></li>
+            <li><a href="temperature.html">Temperature Calculator</a></li>
+        </ul>
+    </div>
+    <div class="container">
+        <h1>BMI Calculator</h1>
+        <div>
+            <label for="name">Your name</label>
+            <input type="text" placeholder="Name" id="name" autofocus>
+            <br>
+            <small class="helper-text">Only letters and spaces.</small>
+            <div class="error" id="nameError"></div>
+        </div>
+        <hr>
+        <div>
+            <label for="height">Your height</label>
+            <input id="height" type="number" placeholder="Height" min="1">
+            <select id="heightunit" name="height">
+                <option value="1">Inches</option>
+                <option value="2">cm</option>
+            </select>
+            <small class="helper-text">Height must be between 50 and 250 cm or 20 and 100 inches</small>
+            <div class="error" id="heightError"></div>
+        </div>
+        <hr>
+        <div>
+            <label for="weight">Your weight</label>
+            <input id="weight" type="number" placeholder="Weight" min="1">
+            <select id="weightunit" name="weight">
+                <option value="1">Pounds</option>
+                <option value="2">kg</option>
+            </select>
+            <small class="helper-text">Weight must be between 20 and 200 kg or 40 and 400 pounds</small>
+            <div class="error" id="weightError"></div>
+        </div>
+        <hr>
+        <div>
+            <label for="decimal">Decimals to use in BMI score</label>
+            <input id="decimal" type="number" value="1" min="0" max="10">
+            <small class="helper-text">Number of decimals must be between 0 and 10</small>
+            <div class="error" id="decimalError"></div>
+        </div>
+        <button onclick="CalculateBMI()">Calculate BMI</button>
+        <p id="result"></p>
+        <script>
+            document.getElementById("name").addEventListener("input", function() {
+                document.getElementById("nameError").textContent = "";
+            });
+            document.getElementById("height").addEventListener("input", function() {
+                document.getElementById("heightError").textContent = "";
+            });
+            document.getElementById("weight").addEventListener("input", function() {
+                document.getElementById("weightError").textContent = "";
+            });
+            document.getElementById("decimal").addEventListener("input", function() {
+                document.getElementById("decimalError").textContent = "";
+            });
+
+            function clearErrors() {
+                document.getElementById("nameError").textContent = "";
+                document.getElementById("heightError").textContent = "";
+                document.getElementById("weightError").textContent = "";
+                document.getElementById("decimalError").textContent = "";
+                document.getElementById("result").textContent = "";
+            }
+
+            function showError(id, message) {
+                document.getElementById(id).textContent = message;
+            }
+
+            function validateInput(name, height, weight, decimal, heightUnit, weightUnit) {
+                if (name.trim() === "") {
+                    showError("nameError", "Name cannot be empty.");
+                    return false;
+                } else if (!/^[a-zA-Z\s]+$/.test(name)) {
+                    showError("nameError", "Name must contain only letters and spaces.");
+                    return false;
+                } else if (name.trim().length < 2) {
+                    showError("nameError", "Name must have at least 2 letters.");
+                    return false;
+                }
+
+                if (isNaN(height) || height <= 0) {
+                    showError("heightError", "Height cannot be empty or zero.");
+                    return false;
+                } else if (heightUnit == 2 && (height < 50 || height > 250)) {
+                    showError("heightError", "Height must be between 50 and 250 cm.");
+                    return false;
+                } else if (heightUnit == 1 && (height < 20 || height > 100)) {
+                    showError("heightError", "Height must be between 20 and 100 inches.");
+                    return false;
+                }
+
+                if (isNaN(weight) || weight <= 0) {
+                    showError("weightError", "Weight cannot be empty or zero.");
+                    return false;
+                } else if (weightUnit == 2 && (weight < 20 || weight > 200)) {
+                    showError("weightError", "Weight must be between 20 and 200 kg.");
+                    return false;
+                } else if (weightUnit == 1 && (weight < 40 || weight > 400)) {
+                    showError("weightError", "Weight must be between 40 and 400 pounds.");
+                    return false;
+                }
+
+                if (isNaN(decimal) || decimal < 0 || decimal > 10) {
+                    showError("decimalError", "Decimals must be between 0 and 10.");
+                    return false;
+                }
+
+                return true;
+            }
+
+            function CalculateBMI() {
+                clearErrors();
+
+                var name = document.getElementById("name").value.trim();
+                var height = parseFloat(document.getElementById("height").value);
+                var weight = parseFloat(document.getElementById("weight").value);
+                var heightUnit = document.getElementById("heightunit").value;
+                var weightUnit = document.getElementById("weightunit").value;
+                var decimal = parseInt(document.getElementById("decimal").value);
+                var result = document.getElementById("result");
+
+                if (!validateInput(name, height, weight, decimal, heightUnit, weightUnit)) {
+                    return;
+                }
+
+                // Convert units
+                if (heightUnit == 1) {
+                    height *= 0.0254; // Convert inches to meters
+                } else {
+                    height /= 100; // Convert cm to meters
+                }
+
+                if (weightUnit == 1) {
+                    weight *= 0.453592; // Convert pounds to kg
+                }
+
+                var bmi = weight / (height * height);
+                bmi = bmi.toFixed(decimal);
+
+                var bmiMessage = "";
+                var bmiColor = "";
+
+                if (bmi < 18.5) {
+                    bmiMessage = "Underweight";
+                    bmiColor = "red";
+                } else if (bmi >= 18.5 && bmi <= 24.9) {
+                    bmiMessage = "Normal weight";
+                    bmiColor = "green";
+                } else if (bmi >= 25 && bmi <= 29.9) {
+                    bmiMessage = "Overweight";
+                    bmiColor = "orange";
+                } else if (bmi >= 30) {
+                    bmiMessage = "Obese";
+                    bmiColor = "red";
+                }
+
+                result.innerHTML = `Dear ${name}, your BMI is ${bmi} which indicates that you are ${bmiMessage}.`;
+                result.style.color = bmiColor;
+            }
+        </script>
+    </div>
+</body>
+</html>

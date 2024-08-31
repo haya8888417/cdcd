@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    
+    <a href="index.html">Back to Homepage</a>
+        <ul class="web">
+            <li><a href="calculator.html">Calculator</a></li>
+            <li><a href="bmi.html">BMI Calculator</a></li>
+            <li><a href="speed.html">Speed Calculator</a></li>
+            <li><a href="temperature.html">Temperature Calculator</a></li>
+        </ul>
+        <div class="container">
+            <div>
+            <input type="number" name="first" id="first" autofocus>
+            <select name="first_one" id="first_one">
+                <option value="celsius">celsius</option>
+                <option value="fahrenheit">fahrenheit</option>
+                <option value="kelvin">kelvin</option>
+            </select>
+            </div>
+            <div>
+                <button class="convert" onclick="fofo()">Convert</button>
+                <select name="first_two" id="first_two">
+                    <option value="celsius">celsius</option>
+                    <option value="fahrenheit">fahrenheit</option>
+                    <option value="kelvin">kelvin</option>
+                </select>
+                </div>
+                <p id="result"></p>
+        </div>
+        
+        <script>
+            
+        function fofo() {
+            var first = parseFloat(document.getElementById("first").value);
+            var first_one = document.getElementById("first_one").value;
+            var first_two = document.getElementById("first_two").value;
+            var result;
+
+            if (first_one === 'celsius') {
+    if (first_two === 'fahrenheit') {
+        result = (first * 9/5) + 32;
+    } else if (first_two === 'kelvin') {
+        result = first + 273.15;
+    }
+} else if (first_one === 'fahrenheit') {
+    if (first_two === 'celsius') {
+        result = (first - 32) * 5/9;
+    } else if (first_two === 'kelvin') {
+        result = ((first - 32) * 5/9) + 273.15;
+    }
+} else if (first_one === 'kelvin') {
+    if (first_two === 'celsius') {
+        result = first - 273.15;
+    } else if (first_two === 'fahrenheit') {
+        result = ((first - 273.15) * 9/5) + 32;
+    }
+}
+            document.getElementById("result").innerText = `Result: ${result.toFixed(2)} ${first_two}`;
+        } 
+        </script>
+</body>
+</html>
